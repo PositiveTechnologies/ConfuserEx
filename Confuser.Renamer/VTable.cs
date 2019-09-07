@@ -215,6 +215,9 @@ namespace Confuser.Renamer {
 					Debug.Assert(impl.MethodBody == method.Value);
 
 					MethodDef targetMethod = impl.MethodDeclaration.ResolveThrow();
+					if (impl.MethodDeclaration.DeclaringType is TypeSpec spec && spec.TypeSig is GenericInstSig genericInstSig) {
+						targetMethod.MethodSig = GenericArgumentResolver.Resolve(targetMethod.MethodSig, genericInstSig.GenericArguments);
+					}
 					if (targetMethod.DeclaringType.IsInterface) {
 						var iface = impl.MethodDeclaration.DeclaringType.ToTypeSig();
 						CheckKeyExist(storage, vTbl.InterfaceSlots, iface, "MethodImpl Iface");
